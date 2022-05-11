@@ -1,0 +1,64 @@
+<div class="page">
+    <header class="page__header">
+      <div class="page__header__content">
+        <img
+          src="/assets/images/millenium-falcon.png"
+          alt="nave millenium falcon star wars"
+          class="page__header__content__logo"
+        />
+        <h1 class="page__header__content__title">Prefeitura de Coruscant</h1>
+      </div>
+      <button class="page__header__new" routerLink="/registrations-list">Listar Cadastros</button>
+    </header>
+    <body class="page__body">
+            <h2 class="page__body__title">
+              <p class="page__body__title__vaccine">Vacinação COVID-19</p>
+              <p class="page__body__title__registration">Cadastro</p>
+            </h2>
+            <form class="page__body__form" (ngSubmit)="transferir()">
+              <label for="name" class="page__body__form__labels">Nome do Paciente</label>
+              <input id="name" class="page__body__form__inputs" type="text" name="nome" />
+          
+              <label for="age" class="page__body__form__labels">Idade</label>
+              <input id="age" class="page__body__form__inputs" type="number" name="idade" />
+          
+              <label for="sus-card" class="page__body__form__labels">Cartão do SUS</label>
+              <input
+                id="sus-card"
+                class="page__body__form__inputs"
+                type="number"
+                name="cartao-sus"
+              />
+          
+              <div class="page__body__form__date">
+                <label for="data-application" class="page__body__form__labels">Data de Aplicação</label>
+                <input
+                  id="date-application"
+                  type="text"
+                  name="data"
+                  class="page__body__form__inputs"
+                  (keyup)="setDateApplicationVaccine($event)"
+                  [(ngModel)]="dateApplicationVaccine"
+                  maxlength="10"
+                  placeholder="dd/mm/aaaa"
+                />
+                <div *ngIf="showToastValidationsCharactersToDate">
+                  <p>Digite apenas números!</p>
+                </div>
+              </div>
+          
+              <label for="vaccine" class="page__body__form__labels">Vacina Aplicada</label>
+              <select
+                name="vaccine-select"
+                class="page__body__form__inputs"
+                id="vaccine-select"
+                [(ngModel)]="vaccineSelected"
+              >
+                <option selected disabled>Selecione uma Vacina</option>
+                <option *ngFor="let vaccine of vaccineOptions">{{ vaccine }}</option>
+              </select>
+          
+              <button class="page__body__form__send" (click)="verifyDateFormat()" type="submit"><i></i>Enviar</button>
+            </form>
+    </body>
+</div>
