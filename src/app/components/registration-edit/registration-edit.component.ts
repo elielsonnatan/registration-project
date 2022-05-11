@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DateApplicationVaccineService } from 'src/app/services/date-application-vaccine.service';
 import { RegistrationService } from 'src/app/services/registration-service.service';
 
@@ -19,13 +20,32 @@ export class RegistrationEditComponent implements OnInit {
     'Johnson & Johnson',
     'Oxford/AstraZeneca',
   ];
+  patientId: string = '';
+  patient: any = {};
 
   constructor(
     private registrationService: RegistrationService,
-    private dateApplicationVaccineService: DateApplicationVaccineService
-  ) {}
+    private dateApplicationVaccineService: DateApplicationVaccineService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    this.route.params.subscribe((params) => (this.patientId = params['id']));
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    debugger;
+    try {
+      let getPatient = this.registrationService.patientList.filter(
+        (patient) => {
+          if (patient.patientId == this.patientId) return patient;
+        }
+      );
+      this.patient = getPatient[0];
+      this.dateApplicationVaccine = getPatient[0].dateApplicationVaccine;
+    } catch (error) {
+      window.alert('Usuário não encontrado!');
+    }
+  }
 
   setDateApplicationVaccine(keyPressioned: KeyboardEvent) {
     let dateVaccineApplicationArray = this.dateApplicationVaccine.split('');
@@ -57,5 +77,15 @@ export class RegistrationEditComponent implements OnInit {
     if (dateFormateIsValid) {
       window.alert('VAI DORMIR TABACUDO');
     }
+  }
+
+  sendFormRegistrationEdited() {
+    this.patient.dateApplicationVaccine = this.dateApplicationVaccine;
+    this.registrationService.patientList.filter((patient, index) => {
+      if (patient.patientId == this.patientId) {
+        this.registrationService.patientList.splice(index, 1, this.patient);
+      }
+    });
+    this.router.navigate(['/registrations-list']);
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DateApplicationVaccineService } from 'src/app/services/date-application-vaccine.service';
 import { RegistrationService } from 'src/app/services/registration-service.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'registration-create',
@@ -11,7 +12,6 @@ import { RegistrationService } from 'src/app/services/registration-service.servi
 export class RegistrationCreateComponent implements OnInit {
   charactersDate: Array<string> = [];
   validKeyCodesToDate: Array<string> = [''];
-  showToastValidationsCharactersToDate: boolean = false;
   dateApplicationVaccine: string = '';
   vaccineSelected: any = 'Selecione uma Vacina';
   vaccineOptions: Array<string> = [
@@ -20,6 +20,14 @@ export class RegistrationCreateComponent implements OnInit {
     'Johnson & Johnson',
     'Oxford/AstraZeneca',
   ];
+  patientObject: any = {
+    patientId: '',
+    name: '',
+    age: 0,
+    numberSusCard: '',
+    dateApplicationVaccine: '',
+    vaccine: 'Selecione uma Vacina',
+  };
 
   constructor(
     private registrationService: RegistrationService,
@@ -56,12 +64,15 @@ export class RegistrationCreateComponent implements OnInit {
         this.dateApplicationVaccine
       );
 
-    if (dateFormateIsValid) {
-      window.alert('VAI DORMIR TABACUDO');
-    }
+    // if (dateFormateIsValid) {
+    //   window.alert('VAI DORMIR TABACUDO');
+    // }
   }
 
-  transferir(): void {
-
+  sendForm(): void {
+    debugger;
+    this.patientObject.patientId = uuidv4();
+    this.patientObject.dateApplicationVaccine = this.dateApplicationVaccine;
+    this.registrationService.patientList.push(this.patientObject);
   }
 }

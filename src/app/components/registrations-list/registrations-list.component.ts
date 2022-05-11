@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { DateApplicationVaccineService } from 'src/app/services/date-application-vaccine.service';
 import { RegistrationService } from 'src/app/services/registration-service.service';
@@ -7,54 +7,35 @@ import { RegistrationService } from 'src/app/services/registration-service.servi
 @Component({
   selector: 'app-registrations-list',
   templateUrl: './registrations-list.component.html',
-  styleUrls: ['./registrations-list.component.scss']
+  styleUrls: ['./registrations-list.component.scss'],
 })
 export class RegistrationsListComponent implements OnInit {
-  patientList: Array<any> = [{
-    name: 'josé',
-    age: 45,
-    numberSusCard: '985496598552',
-    dataApplicationVaccine: '25/12/2021',
-    vaccine: 'Coronavac'
-  },
-  {
-    name: 'josé',
-    age: 45,
-    numberSusCard: '985496598552',
-    dataApplicationVaccine: '25/12/2021',
-    vaccine: 'Coronavac'
-  },
-  {
-    name: 'josé',
-    age: 45,
-    numberSusCard: '985496598552',
-    dataApplicationVaccine: '25/12/2021',
-    vaccine: 'Coronavac'
-  },
-  {
-    name: 'josé',
-    age: 45,
-    numberSusCard: '985496598552',
-    dataApplicationVaccine: '25/12/2021',
-    vaccine: 'Coronavac'
-  },
-  {
-    name: 'josé',
-    age: 45,
-    numberSusCard: '985496598552',
-    dataApplicationVaccine: '25/12/2021',
-    vaccine: 'Coronavac'
-  }]
+  patientList: Array<any> = [];
 
   iconPen = faPen;
   iconTrash = faTrash;
 
-  constructor(private registrationService: RegistrationService,
+  constructor(
+    private registrationService: RegistrationService,
     private dateApplicationVaccineService: DateApplicationVaccineService,
-    private router: Router,){}
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    this.patientList = this.registrationService.patientList;
+  }
 
+  ngOnInit(): void {}
 
-  ngOnInit(): void {
-    
+  redirectToEdit(patient: any) {
+    this.router.navigate([`/registration-edit/${patient}`]);
+  }
+
+  deleteRegistration(patientId: string) {
+    this.registrationService.patientList.filter((patient, index) => {
+      if (patient.patientId == patientId) {
+        this.registrationService.patientList.splice(index, 1);
+      }
+    });
+    this.patientList = this.registrationService.patientList;
   }
 }

@@ -1,35 +1,53 @@
 <div class="page">
-    <header class="page__header">
-      <div class="page__header__content">
-        <img
-          src="/assets/images/millenium-falcon.png"
-          alt="nave millenium falcon star wars"
-          class="page__header__content__logo"
-        />
-        <h1 class="page__header__content__title">Prefeitura de Coruscant</h1>
-      </div>
-      <button class="page__header__new" routerLink="/registration-create">Novo Cadastro</button>
-    </header>
-    <body class="page__body">
-        <table class="page__body__table">
-            <tr>
-                <th>Nome</th>
-                <th>Idade</th>
-                <th>Cartão do Sus</th>
-                <th>Data de Aplicação</th>
-                <th>Vacina</th>
-            </tr>
-            <tr *ngFor="let patient of patientList">
-                <td>{{patient.name}}</td>
-                <td>{{patient.age}}</td>
-                <td>{{patient.numberSusCard}}</td>
-                <td>{{patient.dataApplicationVaccine}}</td>
-                <td>{{patient.vaccine}}</td>
-                <td>
-                    <button><fa-icon [icon]="iconPen"></fa-icon></button>
-                    <button><fa-icon [icon]="iconTrash"></fa-icon></button>
-                </td>
-            </tr>
-        </table>
-    </body>
+  <header class="page__header">
+    <div class="page__header__content">
+      <img
+        src="/assets/images/millenium-falcon.png"
+        alt="nave millenium falcon star wars"
+        class="page__header__content__logo"
+      />
+      <h1 class="page__header__content__title">Prefeitura de Coruscant</h1>
+    </div>
+    <button class="page__header__new" routerLink="/registration-create">
+      Novo Cadastro
+    </button>
+  </header>
+  <body class="page__body">
+    <h2 class="page__body__title">
+      <p class="page__body__title__vaccine">Vacinação COVID-19</p>
+      <p class="page__body__title__registration">Lista de Vacinados</p>
+    </h2>
+    <table class="page__body__table">
+      <tr class="page__body__table__header">
+        <th>Nome</th>
+        <th>Idade</th>
+        <th>Cartão do Sus</th>
+        <th>Data de Aplicação</th>
+        <th>Vacina</th>
+        <th>Ações</th>
+      </tr>
+      <tr *ngFor="let patient of patientList" class="page__body__table__body">
+        <td>{{ patient.name }}</td>
+        <td>{{ patient.age }}</td>
+        <td>{{ patient.numberSusCard }}</td>
+        <td>{{ patient.dateApplicationVaccine }}</td>
+        <td>{{ patient.vaccine }}</td>
+        <td>
+          <button class="edit" (click)="redirectToEdit(patient.patientId)">
+            <fa-icon [icon]="iconPen"></fa-icon>
+          </button>
+          <button
+            class="delete"
+            (click)="deleteRegistration(patient.patientId)"
+          >
+            <fa-icon [icon]="iconTrash"></fa-icon>
+          </button>
+        </td>
+      </tr>
+    </table>
+  </body>
+  <footer>
+    <p class="citation">"Que a força esteja com você!"</p>
+    <p>- Prefeito Yoda</p>
+  </footer>
 </div>
