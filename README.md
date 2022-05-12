@@ -12,3 +12,4 @@ Em seguida a aplicação será conteneirizada em conteineres docker, sendo um co
 Imagem docker do front:
 
 Imagem docker do back: 
+.
