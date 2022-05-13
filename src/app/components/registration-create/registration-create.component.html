@@ -1,6 +1,6 @@
 <div class="page">
-<header class="page__header">
-  <div class="page__header__content">
+  <header class="page__header">
+    <div class="page__header__content">
       <img
         src="/assets/images/millenium-falcon.png"
         alt="nave millenium falcon star wars"
@@ -27,17 +27,27 @@
         type="text"
         name="nome"
         [(ngModel)]="patientName"
-        [ngClass]="{'style-condition': regexPatientName()}"
+        [ngClass]="{ 'style-condition': regexPatientName() }"
         maxlength="40"
       />
-      <span class="span-name message-alert" *ngIf="regexPatientName()"><fa-icon [icon]="faTriangleExclamation" class="page__body__form__buttons__clear__icon"></fa-icon><p>Apenas letras, maiúsculas ou minúsculas, e espaços!</p></span>
+      <span class="span-name message-alert" *ngIf="regexPatientName()"
+        ><fa-icon
+          [icon]="faTriangleExclamation"
+          class="page__body__form__buttons__clear__icon"
+        ></fa-icon>
+        <p>Apenas letras, maiúsculas ou minúsculas, e espaços!</p></span
+      >
 
       <div class="label-age">
         <label for="age" class="page__body__form__labels">Idade*</label>
         <div class="input-newborn">
-          <input type="checkbox" class="checkbox-newborn" (click)="patientUnderOneYearChecked()" [disabled]="patientAge.length > 0">
-          <label for="name" class="label-newborn"
-          >Menor de 1 ano</label>
+          <input
+            type="checkbox"
+            class="checkbox-newborn"
+            (click)="patientUnderOneYearChecked()"
+            [disabled]="patientAge.length > 0"
+          />
+          <label for="name" class="label-newborn">Menor de 1 ano</label>
         </div>
       </div>
       <input
@@ -46,11 +56,17 @@
         type="text"
         name="idade"
         [(ngModel)]="patientAge"
-        [ngClass]="{'style-condition': regexPatientAge()}"
+        [ngClass]="{ 'style-condition': regexPatientAge() }"
         maxlength="3"
         [disabled]="patientUnderOneYear"
       />
-      <span class="span-name message-alert" *ngIf="regexPatientAge()"><fa-icon [icon]="faTriangleExclamation" class="page__body__form__buttons__clear__icon"></fa-icon><p>Apenas números!</p></span>
+      <span class="span-name message-alert" *ngIf="regexPatientAge()"
+        ><fa-icon
+          [icon]="faTriangleExclamation"
+          class="page__body__form__buttons__clear__icon"
+        ></fa-icon>
+        <p>Apenas números!</p></span
+      >
 
       <label for="sus-card" class="page__body__form__labels"
         >Cartão do SUS*</label
@@ -62,9 +78,15 @@
         name="cartao-sus"
         [(ngModel)]="numberSusCard"
         maxlength="15"
-        [ngClass]="{'style-condition': regexPatientSusCard()}"
+        [ngClass]="{ 'style-condition': regexPatientSusCard() }"
       />
-      <span class="span-name message-alert" *ngIf="regexPatientSusCard()"><fa-icon [icon]="faTriangleExclamation" class="page__body__form__buttons__clear__icon"></fa-icon><p>Apenas números!</p></span>
+      <span class="span-name message-alert" *ngIf="regexPatientSusCard()"
+        ><fa-icon
+          [icon]="faTriangleExclamation"
+          class="page__body__form__buttons__clear__icon"
+        ></fa-icon>
+        <p>Apenas números!</p></span
+      >
 
       <div class="page__body__form__date">
         <label for="data-application" class="page__body__form__labels"
@@ -77,13 +99,29 @@
           class="input-default"
           (keyup)="setDateApplicationVaccine($event)"
           [(ngModel)]="dateApplicationVaccine"
-          [ngClass]="{'style-condition': regexDataApplicationVaccine() || invalidDate}"
+          [ngClass]="{
+            'style-condition': regexDataApplicationVaccine() || invalidDate
+          }"
           maxlength="10"
           placeholder="dd/mm/aaaa"
         />
       </div>
-      <span class="span-name message-alert" *ngIf="regexDataApplicationVaccine()"><fa-icon [icon]="faTriangleExclamation" class="page__body__form__buttons__clear__icon"></fa-icon><p>Apenas números!</p></span>
-      <span class="span-name message-alert" *ngIf="invalidDate"><fa-icon [icon]="faTriangleExclamation" class="page__body__form__buttons__clear__icon"></fa-icon><p>Data inválida!</p></span>
+      <span
+        class="span-name message-alert"
+        *ngIf="regexDataApplicationVaccine()"
+        ><fa-icon
+          [icon]="faTriangleExclamation"
+          class="page__body__form__buttons__clear__icon"
+        ></fa-icon>
+        <p>Apenas números!</p></span
+      >
+      <span class="span-name message-alert" *ngIf="invalidDate"
+        ><fa-icon
+          [icon]="faTriangleExclamation"
+          class="page__body__form__buttons__clear__icon"
+        ></fa-icon>
+        <p>Data inválida!</p></span
+      >
 
       <label for="vaccine" class="page__body__form__labels"
         >Vacina Aplicada*</label
@@ -93,30 +131,52 @@
         class="input-default"
         id="vaccine-select"
         [(ngModel)]="vaccineSelected"
-        [ngClass]="{'style-condition': !emptyVaccine}"
+        [ngClass]="{ 'style-condition': !emptyVaccine }"
       >
-        <option *ngFor="let vaccine of vaccines">{{ vaccine }}</option>
+        <option *ngFor="let vaccine of vaccines">{{ vaccine.name }}</option>
       </select>
-      <span class="span-name message-alert" *ngIf="!emptyVaccine"><fa-icon [icon]="faTriangleExclamation" class="page__body__form__buttons__clear__icon"></fa-icon><p>É preciso selecionar uma vacina!</p></span>
+      <span class="span-name message-alert" *ngIf="!emptyVaccine"
+        ><fa-icon
+          [icon]="faTriangleExclamation"
+          class="page__body__form__buttons__clear__icon"
+        ></fa-icon>
+        <p>É preciso selecionar uma vacina!</p></span
+      >
 
       <div class="page__body__form__buttons">
-        <button
-          type="submit"
-          class="page__body__form__buttons__send"
-          [disabled]="!(patientName.length > 0 && patientAge.length > 0 && numberSusCard.length > 0 && dateApplicationVaccine.length > 0 && !emptyVaccine && regexPatientName() && regexPatientAge() && regexPatientSusCard() && regexDataApplicationVaccine() && invalidDate)"
-        >
-        <fa-icon [icon]="faPaperPlane" class="page__body__form__buttons__send__icon"></fa-icon>Enviar
+        <button type="submit" class="page__body__form__buttons__send">
+          <fa-icon
+            [icon]="faPaperPlane"
+            class="page__body__form__buttons__send__icon"
+          ></fa-icon
+          >Enviar
         </button>
         <button
           type="button"
           class="page__body__form__buttons__clear"
           (click)="resetForm()"
         >
-        <fa-icon [icon]="faArrowsRotate" class="page__body__form__buttons__clear__icon"></fa-icon>Limpar
+          <fa-icon
+            [icon]="faArrowsRotate"
+            class="page__body__form__buttons__clear__icon"
+          ></fa-icon
+          >Limpar
         </button>
       </div>
-      <span class="span-name message-alert-send" *ngIf="!allFieldsFilled"><fa-icon [icon]="faTriangleExclamation" class="page__body__form__buttons__clear__icon"></fa-icon><p>Todos os campos precisam ser preenchidos!</p></span>
-      <span class="span-name message-alert-send" *ngIf="!regexTestValid"><fa-icon [icon]="faTriangleExclamation" class="page__body__form__buttons__clear__icon"></fa-icon><p>Algum campo foi preenchido de forma incorreta!</p></span>
+      <span class="span-name message-alert-send" *ngIf="!allFieldsFilled"
+        ><fa-icon
+          [icon]="faTriangleExclamation"
+          class="page__body__form__buttons__clear__icon"
+        ></fa-icon>
+        <p>Todos os campos precisam ser preenchidos!</p></span
+      >
+      <span class="span-name message-alert-send" *ngIf="!regexTestValid"
+        ><fa-icon
+          [icon]="faTriangleExclamation"
+          class="page__body__form__buttons__clear__icon"
+        ></fa-icon>
+        <p>Algum campo foi preenchido de forma incorreta!</p></span
+      >
     </form>
   </body>
   <footer>
