@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DateApplicationVaccineService } from 'src/app/services/date-application-vaccine.service';
 import { RegistrationService } from 'src/app/services/registration-service.service';
 
 @Component({
@@ -25,7 +24,6 @@ export class RegistrationEditComponent implements OnInit {
 
   constructor(
     private registrationService: RegistrationService,
-    private dateApplicationVaccineService: DateApplicationVaccineService,
     private route: ActivatedRoute,
     private router: Router
   ) {
@@ -67,17 +65,6 @@ export class RegistrationEditComponent implements OnInit {
     });
   }
 
-  verifyDateFormat(): void {
-    debugger;
-    let dateFormateIsValid =
-      this.dateApplicationVaccineService.verifyDateFormat(
-        this.dateApplicationVaccine
-      );
-
-    if (dateFormateIsValid) {
-      window.alert('VAI DORMIR TABACUDO');
-    }
-  }
 
   sendFormRegistrationEdited() {
     this.patient.dateApplicationVaccine = this.dateApplicationVaccine;

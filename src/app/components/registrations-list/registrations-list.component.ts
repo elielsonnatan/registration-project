@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { DateApplicationVaccineService } from 'src/app/services/date-application-vaccine.service';
 import { RegistrationService } from 'src/app/services/registration-service.service';
 
 @Component({
@@ -17,7 +16,6 @@ export class RegistrationsListComponent implements OnInit {
 
   constructor(
     private registrationService: RegistrationService,
-    private dateApplicationVaccineService: DateApplicationVaccineService,
     private router: Router,
     private route: ActivatedRoute
   ) {
