@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -24,6 +24,7 @@ import { RegistrationsListComponent } from './components/registrations-list/regi
     FormsModule,
     FontAwesomeModule,
     HttpClientModule,
+    ReactiveFormsModule,
     RouterModule.forRoot([
       { path: 'registrations-list', component: RegistrationsListComponent },
       { path: 'registration-create', component: RegistrationCreateComponent },
