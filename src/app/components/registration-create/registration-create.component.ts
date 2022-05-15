@@ -38,7 +38,7 @@ export class RegistrationCreateComponent implements OnInit {
     birthDate: true,
     patientUnderOneYear: false,
     susCard: true,
-    dates: true,
+    applicationDate: true,
     emptyVaccine: false
   };
   patientObject: any = {
@@ -53,7 +53,7 @@ export class RegistrationCreateComponent implements OnInit {
     lettersAndSpace: /^[a-zA-Z\u00C0-\u00FF ]{1,}$/,
     numbers: /^[0-9]{1,}$/,
     susCard: /^[0-9]{1,}$/,
-    date: /([0-9])|([0-9][0-9])|([0-9][0-9]\/)|([0-9][0-9]\/[0-9])|([0-9][0-9]\/[0-9]\/)|([0-9][0-9]\/[0-9]\/[0-9])|(([0-9][0-9]\/[0-9]\/[0-9][0-9]))|((([0-9][0-9]\/[0-9]\/[0-9][0-9][0-9])))|((([0-9][0-9]\/[0-9]\/[0-9][0-9][0-9][0-9])))/,
+    date: /^[0-9\/]{1,}$/,
   };
 
   character: string = '';
@@ -69,21 +69,23 @@ export class RegistrationCreateComponent implements OnInit {
     this.character = key.key;
   }
 
-  includeSeparatorsInDate(event: KeyboardEvent, variable: string, typeDate: string): void {
-    if(variable.length == 8 && event.key != 'Backspace') {
-      let stringToArray = variable.split('');
-      let arrayToString = '';
-      stringToArray.splice(2,0,'/');
-      stringToArray.splice(5,0,'/');
-      arrayToString = stringToArray.toString();
+  includeSeparatorsInDate(event: KeyboardEvent, typeDate: string): void {debugger
+    if(event.key != 'Backspace' || event.repeat) {
       if (typeDate == 'birthDate') {
-        this.patientObject.birthDate = arrayToString.replace(/,/g, '');
-      } else {
-        this.patientObject.dateApplicationVaccine = arrayToString.replace(/,/g, '');
+        if((this.patientObject.birthDate.length > 2 && this.patientObject.birthDate[2] != '/')){
+          this.patientObject.birthDate = this.patientObject.birthDate.slice(0,2) + '/' + this.patientObject.birthDate.slice(2,this.patientObject.birthDate.length);
+        }
+        if (this.patientObject.birthDate.length > 5 && this.patientObject.birthDate[5] != '/'){
+          this.patientObject.birthDate = this.patientObject.birthDate.slice(0,5) + '/' + this.patientObject.birthDate.slice(5,this.patientObject.birthDate.length)
+        }
+        if (this.patientObject.birthDate.length > 10) {
+          this.patientObject.birthDate = this.patientObject.birthDate.slice(0,10);
+        }
       }
     }
-    console.log(event.key)
   }
+
+
 
   conditionStyleRegex(variable: any) {
     let regexCharacter = /^[0-9]{1,}$/;
@@ -165,6 +167,9 @@ export class RegistrationCreateComponent implements OnInit {
   }
 
   sendForm(): void {
+    // if(!this.regexExpressions.lettersAndSpace.test(this.patientObject.name)) {
+    //   window.alert('Nome inválido!')
+    // }
     debugger;
     if (this.patientObject.vaccineID == 0) {
       this.formValidateConditions.emptyVaccine = true;

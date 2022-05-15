@@ -39,11 +39,12 @@ export class DateService {
   }
 
   validateDate(dateToVerify: string): boolean {
+    debugger
     let getDay = parseInt(this.getDay(dateToVerify));
     let getMonth = parseInt(this.getMonth(dateToVerify));
     let getYear = parseInt(this.getYear(dateToVerify));
 
-    if (getMonth < 1 && getMonth > 12) {
+    if (getMonth < 1 || getMonth > 12) {
       return false
     }
 

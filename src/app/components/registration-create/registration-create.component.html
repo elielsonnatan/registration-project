@@ -43,7 +43,7 @@
           !regexExpressions.lettersAndSpace.test(patientObject.name)
         "
         ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
-        <p>Apenas letras, maiúsculas ou minúsculas, e espaços!</p></span
+        <p>Digitar apenas letras ou espaços!</p></span
       >
 
       <!-- IDADE -->
@@ -56,28 +56,27 @@
           type="text"
           name="birth-date"
           class="input-default"
-          (keyup)="
-            includeSeparatorsInDate(
-              $event,
-              patientObject.birthDate,
-              'birthDate'
-            )
-          "
           [(ngModel)]="patientObject.birthDate"
           [ngClass]="{
             'style-condition':
-              patientObject.birthDate.length > 0 &&
-              (!regexExpressions.date.test(patientObject.birthDate) ||
-                !formValidateConditions.dates)
+            patientObject.birthDate.length > 0 &&
+            (!regexExpressions.date.test(patientObject.birthDate) ||
+            !formValidateConditions.birthDate)
           }"
-          (focus)="formValidateConditions.dates = true"
+          (keyup)="
+            includeSeparatorsInDate(
+              $event,
+              'birthDate'
+            )
+          "
+          (focus)="formValidateConditions.birthDate = true"
           (focusout)="
             validateDate(patientObject.birthDate) &&
             patientObject.birthDate.length > 0
-              ? (formValidateConditions.dates = true)
-              : (formValidateConditions.dates = false)
+              ? (formValidateConditions.birthDate = true)
+              : (formValidateConditions.birthDate = false)
           "
-          maxlength="8"
+          maxlength="10"
           placeholder="Digite apenas números (ddmmaaaa)"
         />
       </div>
@@ -88,12 +87,12 @@
           !regexExpressions.date.test(patientObject.birthDate)
         "
         ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
-        <p>Apenas números!</p></span
+        <p>Digitar apenas números!</p></span
       >
       <span
         class="span-name message-alert"
         *ngIf="
-          patientObject.birthDate.length > 0 && !formValidateConditions.dates
+          patientObject.birthDate.length > 0 && !formValidateConditions.birthDate
         "
         ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
         <p>Data inválida!</p></span
@@ -140,36 +139,39 @@
           !regexExpressions.susCard.test(patientObject.numberSusCard)
         "
         ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
-        <p>Apenas números!</p></span
+        <p>Digitar apenas números!</p></span
       >
 
       <!-- DATA DE APLICAÇÃO -->
       <div class="page__body__form__date">
-        <label for="data-application" class="page__body__form__labels"
+        <label for="application-date" class="page__body__form__labels"
           >Data de Aplicação *</label
         >
         <input
           id="date-application"
           type="text"
-          name="date"
+          name="application-date"
           class="input-default"
-          (keyup)="
-            includeSeparatorsInDate(
-              $event,
-              patientObject.dateApplicationVaccine,
-              'applicationVaccineDate'
-            )
-          "
           [(ngModel)]="patientObject.dateApplicationVaccine"
           [ngClass]="{
             'style-condition':
-              (patientObject.dateApplicationVaccine.length != 0 &&
-                !regexExpressions.date.test(
-                  patientObject.dateApplicationVaccine
-                )) ||
-              (patientObject.dateApplicationVaccine.length == 10 &&
-                validateDate(patientObject.dateApplicationVaccine))
+            patientObject.dateApplicationVaccine.length > 0 &&
+            (!regexExpressions.date.test(patientObject.dateApplicationVaccine) ||
+            !formValidateConditions.applicationDate)
           }"
+          (keyup)="
+            includeSeparatorsInDate(
+              $event,
+              'applicationVaccineDate'
+            )
+          "
+          (focus)="formValidateConditions.applicationDate = true"
+          (focusout)="
+            validateDate(patientObject.dateApplicationVaccine) &&
+            patientObject.dateApplicationVaccine.length > 0
+              ? (formValidateConditions.applicationDate = true)
+              : (formValidateConditions.applicationDate = false)
+          "
           maxlength="8"
           placeholder="Digite apenas números (ddmmaaaa)"
         />
@@ -186,9 +188,7 @@
       <span
         class="span-name message-alert"
         *ngIf="
-          patientObject.dateApplicationVaccine.length > 0 &&
-          patientObject.dateApplicationVaccine.length < 10 &&
-          validateDate(patientObject.dateApplicationVaccine)
+        patientObject.birthDate.length > 0 && !formValidateConditions.applicationDate
         "
         ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
         <p>Data inválida!</p></span
