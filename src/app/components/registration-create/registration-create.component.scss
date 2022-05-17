@@ -33,11 +33,10 @@ input:checkbox {
 .message-alert {
   display: flex;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: red;
-  font-style: italic;
   margin-top: -1.2rem;
-  font-weight: 600;
+  font-weight: 700;
   & fa-icon {
     margin-right: 0.5rem;
     color: #FA9D01;
@@ -48,10 +47,9 @@ input:checkbox {
 .message-alert-send {
   display: flex;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: red;
-  font-style: italic;
-  font-weight: 600;
+  font-weight: 700;
   margin-top: 0.8rem;
   margin-bottom: -1rem;
   & fa-icon {
@@ -73,16 +71,15 @@ input:checkbox {
   justify-content: space-between;
 }
 
-.input-newborn {
+.date-formats {
   display: flex;
   align-items: center;
-  margin-bottom: 0.3rem;
+  font-size: 0.8rem;
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 600;
+  margin-top: -1rem;
+  margin-bottom: 1rem;
 }
-
-.checkbox-newborn {
-  margin-right: 0.5rem;
-}
-
 .page {
   display: flex;
   flex-direction: column;

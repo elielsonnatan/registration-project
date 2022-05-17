@@ -15,11 +15,11 @@ export class DateService {
   }
 
   getMonth(date: string): string {
-    return date.substring(3, 5);
+    return date.substring(2, 4);
   }
 
   getYear(date: string): string {
-    return date.substring(6, 10);
+    return date.substring(4, 8);
   }
 
   convertDateToISOFormat(date: string): string {
@@ -39,7 +39,6 @@ export class DateService {
   }
 
   validateDate(dateToVerify: string): boolean {
-    debugger
     let getDay = parseInt(this.getDay(dateToVerify));
     let getMonth = parseInt(this.getMonth(dateToVerify));
     let getYear = parseInt(this.getYear(dateToVerify));
@@ -79,13 +78,15 @@ export class DateService {
     }
   }
 
-  validateIfDateIsBiggerToCurrentDate(dateToVerify: string): boolean{
+  validateIfDateIsBiggerToCurrentDate(dateToVerify: string): boolean{debugger
+    debugger
     let getDay = parseInt(this.getDay(dateToVerify));
-    let getMonth = parseInt(this.getMonth(dateToVerify)) - 1;
+    let getMonth = parseInt(this.getMonth(dateToVerify));
     let getYear = parseInt(this.getYear(dateToVerify));
+    let currentDate = new Date;
+    let comparisonDate = new Date(getYear, getMonth - 1, getDay);
 
-    let date = new Date;
-    if (getDay > date.getDate() || getMonth > (date.getMonth() + 1) || getYear > date.getFullYear()) {
+    if (comparisonDate > currentDate) {
       return false
     } else {
       return true
