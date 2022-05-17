@@ -14,7 +14,7 @@ import {
   styleUrls: ['./registration-create.component.scss'],
 })
 export class RegistrationCreateComponent implements OnInit {
-  vaccineSelected: string = '';
+  vaccineSelected: any = null;
   vaccines: any = [{ id: 1, name: 'CoronaVac' }];
   faPaperPlane = faPaperPlane;
   faArrowsRotate = faArrowsRotate;
@@ -52,6 +52,7 @@ export class RegistrationCreateComponent implements OnInit {
   ngOnInit(): void {}
 
   setIdVaccine(): void {
+    debugger
     Object.entries(this.vaccines[0]).forEach((vaccines) => {
       if (this.vaccineSelected == vaccines[1]) {
         this.patientRegistry.vaccineId = vaccines[0];
@@ -102,7 +103,13 @@ export class RegistrationCreateComponent implements OnInit {
     }
   }
 
+  teste(param:any){
+    console.log(param)
+  }
+
   sendForm() {
-    // (patientRegistry.birthDate.length == 8 && regexExpressions.numbers.test(patientRegistry.birthDate)) && !validateDate(patientRegistry.birthDate)
+    if(this.patientRegistry.vaccineID == 0) {
+      this.inputValidationStatus.emptyVaccine = true;
+    }
   }
 }
