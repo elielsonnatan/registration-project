@@ -263,14 +263,14 @@
         name="vaccine-select"
         class="input-default"
         id="vaccine-select"
-        [(ngModel)]="vaccineSelected"
+        [(ngModel)]="patientRegistry.vaccineID"
         [ngClass]="{
           'style-condition': inputValidationStatus.emptyVaccine
         }"
         (change)="inputValidationStatus.emptyVaccine = false"
       >
         <option disabled selected>Selecione uma vacina</option>
-        <option *ngFor="let vaccine of vaccines teste(vaccine)">
+        <option *ngFor="let vaccine of vaccines" [value]="vaccine.id">
           {{ vaccine.name }}
         </option>
       </select>

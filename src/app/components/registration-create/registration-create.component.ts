@@ -19,6 +19,8 @@ export class RegistrationCreateComponent implements OnInit {
   faPaperPlane = faPaperPlane;
   faArrowsRotate = faArrowsRotate;
   faTriangleExclamation = faTriangleExclamation;
+  patientBirthDate: string = '';
+  patientDateApplicationVaccine: string = '';
   inputValidationStatus: any = {
     name: true,
     birthDate: true,
@@ -51,15 +53,6 @@ export class RegistrationCreateComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  setIdVaccine(): void {
-    debugger
-    Object.entries(this.vaccines[0]).forEach((vaccines) => {
-      if (this.vaccineSelected == vaccines[1]) {
-        this.patientRegistry.vaccineId = vaccines[0];
-      }
-    });
-  }
-
   validateDate(date: string, inputValidationStatus: string): void {
     debugger;
     let dateFormated: string = '';
@@ -85,9 +78,10 @@ export class RegistrationCreateComponent implements OnInit {
         !this.regexExpressions.dateAcceptsFormats.test(dateFormated)
       ) {
         this.inputValidationStatus.birthDate = false;
-      }
-      if (!this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormated)) {
+      } else if (!this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormated)) {
         this.inputValidationStatus.birthDateSmallerThanCurrentDate = false;
+      } else {
+        this.patientBirthDate = dateFormated;
       }
     } else if (inputValidationStatus == 'applicationDate') {
       if (
@@ -95,21 +89,39 @@ export class RegistrationCreateComponent implements OnInit {
         !this.regexExpressions.dateAcceptsFormats.test(dateFormated)
       ) {
         this.inputValidationStatus.applicationDate = false;
-      }
-      if (!this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormated)) {
+      } else if (!this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormated)) {
         this.inputValidationStatus.dateApplicationSmallerThanCurrentDate =
           false;
+      } else {
+        this.patientDateApplicationVaccine = dateFormated;
       }
     }
   }
 
-  teste(param:any){
-    console.log(param)
+  vaccineChange(vaccineId: EventTarget) {
+    if (this.inputValidationStatus.emptyVaccine) {
+      this.inputValidationStatus.emptyVaccine = false;
+    }
+
+    this.patientRegistry.vaccineID = vaccineId;
   }
 
   sendForm() {
-    if(this.patientRegistry.vaccineID == 0) {
+    if (this.patientRegistry.vaccineID == 0) {
       this.inputValidationStatus.emptyVaccine = true;
     }
+    this.patientRegistry.birthDate = this.patientBirthDate;
+    this.patientRegistry.dateApplicationVaccine = this.patientDateApplicationVaccine;
+    this.patientRegistry.registryUUID = uuidv4();
+    console.log(this.patientRegistry);
+    this.patientRegistry = {
+      registryUUID: '',
+      name: '',
+      birthDate: '',
+      numberSusCard: '',
+      dateApplicationVaccine: '',
+      vaccineID: 0,
+    };
   }
 }
+
