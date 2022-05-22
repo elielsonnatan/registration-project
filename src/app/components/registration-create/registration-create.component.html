@@ -267,7 +267,7 @@
         [ngClass]="{
           'style-condition': inputValidationStatus.emptyVaccine
         }"
-        (change)="inputValidationStatus.emptyVaccine = false"
+        (ngModelChange)="inputValidationStatus.emptyVaccine = false"
       >
         <option disabled selected>Selecione uma vacina</option>
         <option *ngFor="let vaccine of vaccines" [value]="vaccine.id">
@@ -297,9 +297,11 @@
           >Limpar
         </button>
       </div>
-      <span class="span-name message-alert-send"
+      <span class="span-name message-alert-send" *ngIf="showAlertFormInvalid"
         ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
-        <p>Todos os campos precisam ser preenchidos!</p></span
+        <p>
+          Verifique se existem campos obrigatórios não preenchidos ou inválidos!
+        </p></span
       >
     </form>
   </body>

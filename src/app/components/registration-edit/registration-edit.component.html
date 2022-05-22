@@ -12,114 +12,247 @@
   <body class="page__body">
     <h2 class="page__body__title">
       <p class="page__body__title__vaccine">Vacinação COVID-19</p>
-      <p class="page__body__title__registration">Editar Cadastro</p>
+      <p class="page__body__title__registration">Editar Cadastro/p>
     </h2>
+
+    <!-- NOME -->
     <form class="page__body__form" (ngSubmit)="sendForm()" autocomplete="off">
       <label for="name" class="page__body__form__labels"
-        >Nome do Paciente*</label
+        >Nome do Paciente *</label
       >
       <input
         id="name"
         class="input-default"
         type="text"
         name="nome"
-        [(ngModel)]="patientName"
-        [ngClass]="{ 'style-condition': regexPatientName() }"
+        [(ngModel)]="patientRegistry.name"
+        [ngClass]="{
+          'style-condition':
+            patientRegistry.name.length != 0 &&
+            !regexExpressions.lettersAndSpace.test(patientRegistry.name)
+        }"
         maxlength="40"
       />
-      <span class="span-name message-alert" *ngIf="regexPatientName()"
-        ><fa-icon
-          [icon]="faTriangleExclamation"
-          class="page__body__form__buttons__clear__icon"
-        ></fa-icon>
-        <p>Apenas letras, maiúsculas ou minúsculas, e espaços!</p></span
+      <span
+        class="span-name message-alert"
+        *ngIf="
+          patientRegistry.name.length != 0 &&
+          !regexExpressions.lettersAndSpace.test(patientRegistry.name)
+        "
+        ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
+        <p>Digite apenas letras ou espaços!</p></span
       >
 
-      <div class="label-age">
-        <label for="age" class="page__body__form__labels">Idade*</label>
-        <div class="input-newborn">
-          <input
-            type="checkbox"
-            class="checkbox-newborn"
-            (click)="patientUnderOneYearChecked()"
-            [disabled]="patientAge.length > 0"
-          />
-          <label for="name" class="label-newborn">Menor de 1 ano</label>
-        </div>
+      <!-- IDADE -->
+      <div class="page__body__form__date">
+        <label for="birth-date" class="page__body__form__labels"
+          >Data de Nascimento *</label
+        >
+        <input
+          id="birth-date"
+          type="text"
+          name="birth-date"
+          class="input-default"
+          [(ngModel)]="patientRegistry.birthDate"
+          [ngClass]="{
+            'style-condition':
+              patientRegistry.birthDate.length > 0 &&
+              (!regexExpressions.dateCharactersPermited.test(
+                patientRegistry.birthDate
+              ) ||
+                !inputValidationStatus.birthDate)
+          }"
+          [maxlength]="
+            regexExpressions.numbers.test(patientRegistry.birthDate) ? 8 : 10
+          "
+          (keyup)="
+            (regexExpressions.numbers.test(patientRegistry.birthDate) &&
+              patientRegistry.birthDate.length == 8) ||
+            patientRegistry.birthDate.length == 10
+              ? validateDate(patientRegistry.birthDate, 'birthDate')
+              : (inputValidationStatus.birthDate = true)
+          "
+          (keyup)="
+            (regexExpressions.numbers.test(patientRegistry.birthDate) &&
+              patientRegistry.birthDate.length == 8) ||
+            patientRegistry.birthDate.length == 10
+              ? validateDate(patientRegistry.birthDate, 'birthDate')
+              : (inputValidationStatus.birthDateSmallerThanCurrentDate = true)
+          "
+          (focus)="
+            inputValidationStatus.birthDate = true;
+            inputValidationStatus.birthDateSmallerThanCurrentDate = true
+          "
+          (focusout)="
+            patientRegistry.birthDate.length != 0 &&
+              validateDate(patientRegistry.birthDate, 'birthDate')
+          "
+          placeholder="Digite apenas números com ou sem separadores . / -"
+        />
       </div>
-      <input
-        id="age"
-        class="input-default"
-        type="text"
-        name="idade"
-        [(ngModel)]="patientAge"
-        [ngClass]="{ 'style-condition': regexPatientAge() }"
-        maxlength="3"
-        [disabled]="patientUnderOneYear"
-      />
-      <span class="span-name message-alert" *ngIf="regexPatientAge()"
-        ><fa-icon
-          [icon]="faTriangleExclamation"
-          class="page__body__form__buttons__clear__icon"
-        ></fa-icon>
-        <p>Apenas números!</p></span
+      <span
+        class="span-name message-alert"
+        *ngIf="
+          patientRegistry.birthDate.length != 0 &&
+          !regexExpressions.dateCharactersPermited.test(
+            patientRegistry.birthDate
+          )
+        "
+        ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
+        <p>
+          Digitar apenas números com ou sem os separadores <strong>. </strong
+          ><strong>/ </strong><strong>- </strong>
+        </p></span
+      >
+      <span
+        class="span-name message-alert"
+        *ngIf="!inputValidationStatus.birthDate"
+        ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
+        <p>A combinação DIA MÊS ANO informada não é uma data válida!</p></span
+      >
+      <span
+        class="span-name message-alert"
+        *ngIf="
+          patientRegistry.birthDate.length != 0 &&
+          !inputValidationStatus.birthDateSmallerThanCurrentDate
+        "
+        ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
+        <p>Digite uma data anterior ou igual a de hoje!</p></span
       >
 
+      <!-- CARTÃO DO SUS -->
       <label for="sus-card" class="page__body__form__labels"
-        >Cartão do SUS*</label
+        >Cartão do SUS *</label
       >
       <input
         id="sus-card"
         class="input-default"
         type="text"
         name="cartao-sus"
-        [(ngModel)]="numberSusCard"
+        [(ngModel)]="patientRegistry.numberSusCard"
         maxlength="15"
-        [ngClass]="{ 'style-condition': regexPatientSusCard() }"
+        [ngClass]="{
+          'style-condition':
+            patientRegistry.numberSusCard.length > 0 &&
+            (!regexExpressions.numbers.test(patientRegistry.numberSusCard) ||
+              !inputValidationStatus.susCard)
+        }"
+        (focus)="inputValidationStatus.susCard = true"
+        (focusout)="
+          patientRegistry.numberSusCard.length == 15 &&
+          patientRegistry.numberSusCard.length > 0
+            ? (inputValidationStatus.susCard = true)
+            : (inputValidationStatus.susCard = false)
+        "
       />
-      <span class="span-name message-alert" *ngIf="regexPatientSusCard()"
-        ><fa-icon
-          [icon]="faTriangleExclamation"
-          class="page__body__form__buttons__clear__icon"
-        ></fa-icon>
-        <p>Apenas números!</p></span
+      <span
+        class="span-name message-alert"
+        *ngIf="
+          !inputValidationStatus.susCard &&
+          patientRegistry.numberSusCard.length > 0
+        "
+        ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
+        <p>O número do cartão do SUS possui 15 dígitos.</p></span
+      >
+      <span
+        class="span-name message-alert"
+        *ngIf="
+          patientRegistry.numberSusCard.length != 0 &&
+          !regexExpressions.numbers.test(patientRegistry.numberSusCard)
+        "
+        ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
+        <p>Digitar apenas números!</p></span
       >
 
+      <!-- DATA DE APLICAÇÃO -->
       <div class="page__body__form__date">
-        <label for="data-application" class="page__body__form__labels"
-          >Data de Aplicação*</label
+        <label for="application-date" class="page__body__form__labels"
+          >Data de Aplicação *</label
         >
         <input
           id="date-application"
           type="text"
-          name="data"
+          name="application-date"
           class="input-default"
-          (keyup)="setDateApplicationVaccine($event)"
-          [(ngModel)]="dateApplicationVaccine"
+          [(ngModel)]="patientRegistry.dateApplicationVaccine"
           [ngClass]="{
-            'style-condition': regexDataApplicationVaccine() || invalidDate
+            'style-condition':
+              patientRegistry.dateApplicationVaccine.length > 0 &&
+              (!regexExpressions.dateCharactersPermited.test(
+                patientRegistry.dateApplicationVaccine
+              ) ||
+                !inputValidationStatus.applicationDate)
           }"
-          maxlength="10"
-          placeholder="dd/mm/aaaa"
+          (keyup)="
+            (regexExpressions.numbers.test(
+              patientRegistry.dateApplicationVaccine
+            ) &&
+              patientRegistry.dateApplicationVaccine.length == 8) ||
+            patientRegistry.dateApplicationVaccine.length == 10
+              ? validateDate(
+                  patientRegistry.dateApplicationVaccine,
+                  'applicationDate'
+                )
+              : (inputValidationStatus.applicationDate = true)
+          "
+          (keyup)="
+            (regexExpressions.numbers.test(
+              patientRegistry.dateApplicationVaccine
+            ) &&
+              patientRegistry.dateApplicationVaccine.length == 8) ||
+            patientRegistry.dateApplicationVaccine.length == 10
+              ? validateDate(
+                  patientRegistry.dateApplicationVaccine,
+                  'applicationDate'
+                )
+              : (inputValidationStatus.dateApplicationSmallerThanCurrentDate = true)
+          "
+          (focus)="inputValidationStatus.applicationDate = true"
+          (focusout)="
+            patientRegistry.dateApplicationVaccine.length != 0 &&
+              validateDate(
+                patientRegistry.dateApplicationVaccine,
+                'applicationDate'
+              )
+          "
+          [maxlength]="
+            regexExpressions.numbers.test(
+              patientRegistry.dateApplicationVaccine
+            )
+              ? 8
+              : 10
+          "
+          placeholder="Digite apenas números com ou sem separadores . / -"
         />
       </div>
       <span
         class="span-name message-alert"
-        *ngIf="regexDataApplicationVaccine()"
-        ><fa-icon
-          [icon]="faTriangleExclamation"
-          class="page__body__form__buttons__clear__icon"
-        ></fa-icon>
+        *ngIf="
+          patientRegistry.dateApplicationVaccine.length != 0 &&
+          !regexExpressions.dateCharactersPermited.test(
+            patientRegistry.dateApplicationVaccine
+          )
+        "
+        ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
         <p>Apenas números!</p></span
       >
-      <span class="span-name message-alert" *ngIf="invalidDate"
-        ><fa-icon
-          [icon]="faTriangleExclamation"
-          class="page__body__form__buttons__clear__icon"
-        ></fa-icon>
-        <p>Data inválida!</p></span
+      <span
+        class="span-name message-alert"
+        *ngIf="!inputValidationStatus.applicationDate"
+        ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
+        <p>A combinação DIA MÊS ANO informada não é uma data válida!</p></span
+      >
+      <span
+        class="span-name message-alert"
+        *ngIf="
+          patientRegistry.dateApplicationVaccine.length != 0 &&
+          !inputValidationStatus.dateApplicationSmallerThanCurrentDate
+        "
+        ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
+        <p>Digite uma data anterior ou igual a de hoje!</p></span
       >
 
+      <!-- VACINA APLICADA -->
       <label for="vaccine" class="page__body__form__labels"
         >Vacina Aplicada*</label
       >
@@ -127,16 +260,21 @@
         name="vaccine-select"
         class="input-default"
         id="vaccine-select"
-        [(ngModel)]="vaccineSelected"
-        [ngClass]="{ 'style-condition': !emptyVaccine }"
+        [(ngModel)]="patientRegistry.vaccineID"
+        [ngClass]="{
+          'style-condition': inputValidationStatus.emptyVaccine
+        }"
+        (ngModelChange)="inputValidationStatus.emptyVaccine = false"
       >
-        <option *ngFor="let vaccine of vaccines">{{ vaccine.name }}</option>
+        <option disabled selected>Selecione uma vacina</option>
+        <option *ngFor="let vaccine of vaccines" [value]="vaccine.id">
+          {{ vaccine.name }}
+        </option>
       </select>
-      <span class="span-name message-alert" *ngIf="!emptyVaccine"
-        ><fa-icon
-          [icon]="faTriangleExclamation"
-          class="page__body__form__buttons__clear__icon"
-        ></fa-icon>
+      <span
+        class="span-name message-alert"
+        *ngIf="inputValidationStatus.emptyVaccine"
+        ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
         <p>É preciso selecionar uma vacina!</p></span
       >
 
@@ -148,11 +286,7 @@
           ></fa-icon
           >Enviar
         </button>
-        <button
-          type="button"
-          class="page__body__form__buttons__clear"
-          (click)="resetForm()"
-        >
+        <button type="button" class="page__body__form__buttons__clear">
           <fa-icon
             [icon]="faArrowsRotate"
             class="page__body__form__buttons__clear__icon"
@@ -160,19 +294,11 @@
           >Limpar
         </button>
       </div>
-      <span class="span-name message-alert-send" *ngIf="!allFieldsFilled"
-        ><fa-icon
-          [icon]="faTriangleExclamation"
-          class="page__body__form__buttons__clear__icon"
-        ></fa-icon>
-        <p>Todos os campos precisam ser preenchidos!</p></span
-      >
-      <span class="span-name message-alert-send" *ngIf="!regexTestValid"
-        ><fa-icon
-          [icon]="faTriangleExclamation"
-          class="page__body__form__buttons__clear__icon"
-        ></fa-icon>
-        <p>Algum campo foi preenchido de forma incorreta!</p></span
+      <span class="span-name message-alert-send" *ngIf="showAlertFormInvalid"
+        ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
+        <p>
+          Verifique se existem campos obrigatórios não preenchidos ou inválidos!
+        </p></span
       >
     </form>
   </body>

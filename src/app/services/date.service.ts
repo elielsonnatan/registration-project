@@ -78,8 +78,7 @@ export class DateService {
     }
   }
 
-  validateIfDateIsBiggerToCurrentDate(dateToVerify: string): boolean{debugger
-    debugger
+  validateIfDateIsBiggerToCurrentDate(dateToVerify: string): boolean{
     let getDay = parseInt(this.getDay(dateToVerify));
     let getMonth = parseInt(this.getMonth(dateToVerify));
     let getYear = parseInt(this.getYear(dateToVerify));

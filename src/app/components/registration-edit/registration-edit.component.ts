@@ -14,22 +14,39 @@ import {
   styleUrls: ['./registration-edit.component.scss'],
 })
 export class RegistrationEditComponent implements OnInit {
-  patientName: string = '';
-  patientAge: string = '';
-  numberSusCard: string = '';
-  dateApplicationVaccine: string = '';
-  vaccineSelected: string = '';
+  vaccineSelected: any = null;
   vaccines: any = [{ id: 1, name: 'CoronaVac' }];
-  newPatientObject: any = {};
   faPaperPlane = faPaperPlane;
   faArrowsRotate = faArrowsRotate;
   faTriangleExclamation = faTriangleExclamation;
-  showAlertCharacter: boolean = false;
-  patientUnderOneYear: boolean = false;
-  allFieldsFilled: boolean = true;
-  invalidDate: boolean = false;
-  emptyVaccine: boolean = true;
-  regexTestValid: boolean = true;
+  patientBirthDate: string = '';
+  patientDateApplicationVaccine: string = '';
+  inputValidationStatus: any = {
+    name: true,
+    birthDate: true,
+    numberSusCard: true,
+    applicationDate: true,
+    birthDateSmallerThanCurrentDate: true,
+    applicationDateSmallerThanCurrentDate: true,
+    emptyVaccine: false,
+  };
+  patientRegistry: any = {
+    registryUUID: '',
+    name: '',
+    birthDate: '',
+    numberSusCard: '',
+    dateApplicationVaccine: '',
+    vaccineID: 0,
+  };
+  regexExpressions: any = {
+    lettersAndSpace: /^[a-zA-Z\u00C0-\u00FF ]{1,}$/,
+    numbers: /^[0-9]{1,}$/,
+    dateCharactersPermited: /^[0-9\/\.-]{1,}$/,
+    dateAcceptsFormats:
+      /(\d\d\d\d\d\d\d\d)|(\d\d\/\d\d\/\d\d\d\d)|(\d\d-\d\d-\d\d\d\d)|(\d\d\/\d\d\/\d\d\d\d)/,
+  };
+  formValidToSend: boolean = true;
+  showAlertFormInvalid: boolean = false;
 
   constructor(
     private registrationService: RegistrationService,
@@ -38,162 +55,99 @@ export class RegistrationEditComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  setDateApplicationVaccine(keyPressioned: KeyboardEvent): void {
-    let dateVaccineApplicationArray = this.dateApplicationVaccine.split('');
+  validateDate(date: string, inputValidationStatus: string): void {
+    let dateFormated: string = '';
 
-    for (const iterator of dateVaccineApplicationArray) {
-      if (iterator != '/' && isNaN(parseInt(iterator))) {
-      } else if (
-        this.dateApplicationVaccine.length == 2 &&
-        keyPressioned.key != 'Backspace'
+    if (this.regexExpressions.numbers.test(date) && date.length == 8) {
+      dateFormated = date;
+    } else if (date.length == 10) {
+      dateFormated =
+        date.substring(0, 2) + date.substring(3, 5) + date.substring(6, 10);
+    } else {
+      if (inputValidationStatus == 'birthDate') {
+        this.inputValidationStatus.birthDate = false;
+        this.inputValidationStatus.birthDateSmallerThanCurrentDate = true;
+      } else if (inputValidationStatus == 'applicationDate') {
+        this.inputValidationStatus.applicationDate = false;
+        this.inputValidationStatus.dateApplicationSmallerThanCurrentDate = true;
+      }
+    }
+
+    if (inputValidationStatus == 'birthDate') {
+      if (
+        !this.dateService.validateDate(dateFormated) ||
+        !this.regexExpressions.dateAcceptsFormats.test(dateFormated)
       ) {
-        this.dateApplicationVaccine += '/';
+        this.inputValidationStatus.birthDate = false;
       } else if (
-        this.dateApplicationVaccine.length == 5 &&
-        keyPressioned.key != 'Backspace'
+        !this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormated)
       ) {
-        this.dateApplicationVaccine += '/';
-      } 
-    }
-  }
-
-  conditionStyleRegex(variable: any) {
-    let regexCharacter = /^[0-9]{1,}$/;
-
-    if (!regexCharacter.test(variable) && variable != '') {
-      return true;
-      this.showAlertCharacter = true;
-    } else {
-      return false;
-    }
-  }
-
-  setIdVaccine(): void {
-    Object.entries(this.vaccines[0]).forEach((vaccines) => {
-      if (this.vaccineSelected == vaccines[1]) {
-        this.newPatientObject.vaccineId = vaccines[0];
-      }
-    });
-  }
-
-  validateDate(): boolean {
-    if (!this.dateService.validateDate(this.dateApplicationVaccine)) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  regexPatientName() {
-    debugger
-    let regexNamePatient = /^[a-zA-Z\u00C0-\u00FF ]{1,}$/;
-    if (
-      !regexNamePatient.test(this.patientName) &&
-      this.patientName.length > 0
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  regexPatientAge() {
-    debugger
-    let regexAgePatient = /^[0-9]{1,}$/;
-    // let regexAgePatient = /([1-9])|([0-9][1-9])|[0-9][0-9][1-9]/
-    if (!regexAgePatient.test(this.patientAge) && this.patientAge.length > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  regexPatientSusCard() {
-    debugger
-    let regexNumberSusCard = /^[0-9]{1,}$/;
-    if (
-      !regexNumberSusCard.test(this.numberSusCard) &&
-      this.numberSusCard.length > 0
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  regexDataApplicationVaccine() {
-    debugger
-    let regexDate = /([0-9][0-9]\/[0-9][0-9]\/[0-9][0-9][0-9][0-9])/;
-    if (this.dateApplicationVaccine.length == 10) {
-      if (!regexDate.test(this.dateApplicationVaccine)) {
-        return true;
+        this.inputValidationStatus.birthDateSmallerThanCurrentDate = false;
       } else {
-        return false;
+        this.patientBirthDate = dateFormated;
       }
-    } else {
-      return false;
-    }
-  }
-
-  sendForm(): void {
-    debugger;
-    if (
-      !(
-        this.patientName.length > 0 &&
-        this.patientAge.length > 0 &&
-        !this.patientUnderOneYear &&
-        this.numberSusCard.length > 0 &&
-        this.dateApplicationVaccine.length > 0 &&
-        this.vaccineSelected.length > 0
-      )
-    ) {
-      if (!(this.vaccineSelected.length > 0)) {
-        this.emptyVaccine = true;
-      }
-      this.allFieldsFilled = false;
-      setTimeout(() => {
-        this.allFieldsFilled = true;
-      }, 5000);
-    } else if (!this.validateDate()) {
-      this.invalidDate = true;
-    } else if (
-        this.regexPatientName() ||
-        this.regexPatientAge() ||
-        this.regexPatientSusCard() ||
-        this.regexDataApplicationVaccine()
-    ) {
-      this.regexTestValid = false;
-      setTimeout(() => {
-        this.regexTestValid = true;
-      }, 5000);
-    } else {
-      this.regexTestValid = true;
-      this.newPatientObject.patientId = uuidv4();
-      this.newPatientObject.name = this.patientName;
-      if (this.patientUnderOneYear) {
-        this.newPatientObject.age = 0;
+    } else if (inputValidationStatus == 'applicationDate') {
+      if (
+        !this.dateService.validateDate(dateFormated) ||
+        !this.regexExpressions.dateAcceptsFormats.test(dateFormated)
+      ) {
+        this.inputValidationStatus.applicationDate = false;
+      } else if (
+        !this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormated)
+      ) {
+        this.inputValidationStatus.dateApplicationSmallerThanCurrentDate =
+          false;
       } else {
-        this.newPatientObject.age = parseInt(this.patientAge);
+        this.patientDateApplicationVaccine = dateFormated;
       }
-      this.newPatientObject.numberSusCard = parseInt(this.numberSusCard);
-      this.newPatientObject.dateApplicationVaccine =
-        this.dateApplicationVaccine;
-      this.setIdVaccine();
-      this.registrationService.insertNewRecord(this.newPatientObject);
-      window.alert('Cadastro realizado com sucesso!');
-      this.resetForm();
     }
-    console.log(this.newPatientObject);
   }
 
-  patientUnderOneYearChecked() {
-    this.patientUnderOneYear = !this.patientUnderOneYear;
+  validateFormToSend() {
+    if (
+      !this.patientRegistry.registryUUID ||
+      !this.patientRegistry.name ||
+      !this.patientRegistry.birthDate ||
+      this.patientRegistry.numberSusCard.length < 15 ||
+      !this.patientRegistry.dateApplicationVaccine || 
+      this.patientRegistry.vaccineID == 0 ||
+      !this.regexExpressions.lettersAndSpace.test(this.patientRegistry.name) ||
+      !this.regexExpressions.dateCharactersPermited.test(this.patientRegistry.birthDate) ||
+      !this.regexExpressions.dateAcceptsFormats.test(this.patientRegistry.birthDate) ||
+      !this.inputValidationStatus.birthDate ||
+      !this.inputValidationStatus.birthDateSmallerThanCurrentDate ||
+      !this.regexExpressions.numbers.test(this.patientRegistry.numberSusCard) ||
+      !this.regexExpressions.dateCharactersPermited.test(this.patientRegistry.dateApplicationVaccine) ||
+      !this.regexExpressions.dateAcceptsFormats.test(this.patientRegistry.dateApplicationVaccine) ||
+      !this.inputValidationStatus.applicationDate ||
+      !this.inputValidationStatus.dateApplicationSmallerThanCurrentDate
+    ) {
+      this.showAlertFormInvalid = true;
+      setTimeout(() => {
+        this.showAlertFormInvalid = false;
+      }, 5000);
+      return false;
+    } else {
+      return true;
+    }
   }
 
-  resetForm() {
-    this.patientName = '';
-    this.patientAge = '';
-    this.numberSusCard = '';
-    this.dateApplicationVaccine = '';
+  sendForm() {
+    if (this.patientRegistry.vaccineID == 0) {
+      this.inputValidationStatus.emptyVaccine = true;
+    }
+    this.patientRegistry.registryUUID = uuidv4();
+    if (this.validateFormToSend()) {
+      this.patientRegistry.birthDate = this.patientBirthDate;
+      this.patientRegistry.dateApplicationVaccine = this.patientDateApplicationVaccine;
+      this.patientRegistry = {
+        registryUUID: '',
+        name: '',
+        birthDate: '',
+        numberSusCard: '',
+        dateApplicationVaccine: '',
+        vaccineID: 0,
+      };
+    }
   }
 }

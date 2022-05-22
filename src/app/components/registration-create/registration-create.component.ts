@@ -45,6 +45,8 @@ export class RegistrationCreateComponent implements OnInit {
     dateAcceptsFormats:
       /(\d\d\d\d\d\d\d\d)|(\d\d\/\d\d\/\d\d\d\d)|(\d\d-\d\d-\d\d\d\d)|(\d\d\/\d\d\/\d\d\d\d)/,
   };
+  formValidToSend: boolean = true;
+  showAlertFormInvalid: boolean = false;
 
   constructor(
     private registrationService: RegistrationService,
@@ -54,7 +56,6 @@ export class RegistrationCreateComponent implements OnInit {
   ngOnInit(): void {}
 
   validateDate(date: string, inputValidationStatus: string): void {
-    debugger;
     let dateFormated: string = '';
 
     if (this.regexExpressions.numbers.test(date) && date.length == 8) {
@@ -78,7 +79,9 @@ export class RegistrationCreateComponent implements OnInit {
         !this.regexExpressions.dateAcceptsFormats.test(dateFormated)
       ) {
         this.inputValidationStatus.birthDate = false;
-      } else if (!this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormated)) {
+      } else if (
+        !this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormated)
+      ) {
         this.inputValidationStatus.birthDateSmallerThanCurrentDate = false;
       } else {
         this.patientBirthDate = dateFormated;
@@ -89,7 +92,9 @@ export class RegistrationCreateComponent implements OnInit {
         !this.regexExpressions.dateAcceptsFormats.test(dateFormated)
       ) {
         this.inputValidationStatus.applicationDate = false;
-      } else if (!this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormated)) {
+      } else if (
+        !this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormated)
+      ) {
         this.inputValidationStatus.dateApplicationSmallerThanCurrentDate =
           false;
       } else {
@@ -98,30 +103,51 @@ export class RegistrationCreateComponent implements OnInit {
     }
   }
 
-  vaccineChange(vaccineId: EventTarget) {
-    if (this.inputValidationStatus.emptyVaccine) {
-      this.inputValidationStatus.emptyVaccine = false;
+  validateFormToSend() {
+    if (
+      !this.patientRegistry.registryUUID ||
+      !this.patientRegistry.name ||
+      !this.patientRegistry.birthDate ||
+      this.patientRegistry.numberSusCard.length < 15 ||
+      !this.patientRegistry.dateApplicationVaccine || 
+      this.patientRegistry.vaccineID == 0 ||
+      !this.regexExpressions.lettersAndSpace.test(this.patientRegistry.name) ||
+      !this.regexExpressions.dateCharactersPermited.test(this.patientRegistry.birthDate) ||
+      !this.regexExpressions.dateAcceptsFormats.test(this.patientRegistry.birthDate) ||
+      !this.inputValidationStatus.birthDate ||
+      !this.inputValidationStatus.birthDateSmallerThanCurrentDate ||
+      !this.regexExpressions.numbers.test(this.patientRegistry.numberSusCard) ||
+      !this.regexExpressions.dateCharactersPermited.test(this.patientRegistry.dateApplicationVaccine) ||
+      !this.regexExpressions.dateAcceptsFormats.test(this.patientRegistry.dateApplicationVaccine) ||
+      !this.inputValidationStatus.applicationDate ||
+      !this.inputValidationStatus.dateApplicationSmallerThanCurrentDate
+    ) {
+      this.showAlertFormInvalid = true;
+      setTimeout(() => {
+        this.showAlertFormInvalid = false;
+      }, 5000);
+      return false;
+    } else {
+      return true;
     }
-
-    this.patientRegistry.vaccineID = vaccineId;
   }
 
   sendForm() {
     if (this.patientRegistry.vaccineID == 0) {
       this.inputValidationStatus.emptyVaccine = true;
     }
-    this.patientRegistry.birthDate = this.patientBirthDate;
-    this.patientRegistry.dateApplicationVaccine = this.patientDateApplicationVaccine;
     this.patientRegistry.registryUUID = uuidv4();
-    console.log(this.patientRegistry);
-    this.patientRegistry = {
-      registryUUID: '',
-      name: '',
-      birthDate: '',
-      numberSusCard: '',
-      dateApplicationVaccine: '',
-      vaccineID: 0,
-    };
+    if (this.validateFormToSend()) {
+      this.patientRegistry.birthDate = this.patientBirthDate;
+      this.patientRegistry.dateApplicationVaccine = this.patientDateApplicationVaccine;
+      this.patientRegistry = {
+        registryUUID: '',
+        name: '',
+        birthDate: '',
+        numberSusCard: '',
+        dateApplicationVaccine: '',
+        vaccineID: 0,
+      };
+    }
   }
 }
-
