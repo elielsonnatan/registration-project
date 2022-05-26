@@ -57,7 +57,7 @@
           [ngClass]="{
             'style-condition':
               patientRegistry.birthDate.length > 0 &&
-              (!regexExpressions.dateCharactersPermited.test(
+              (!regexExpressions.dateCharactersPermitted.test(
                 patientRegistry.birthDate
               ) ||
                 !inputValidationStatus.birthDate)
@@ -94,7 +94,7 @@
         class="span-name message-alert"
         *ngIf="
           patientRegistry.birthDate.length != 0 &&
-          !regexExpressions.dateCharactersPermited.test(
+          !regexExpressions.dateCharactersPermitted.test(
             patientRegistry.birthDate
           )
         "
@@ -135,20 +135,20 @@
           'style-condition':
             patientRegistry.numberSusCard.length > 0 &&
             (!regexExpressions.numbers.test(patientRegistry.numberSusCard) ||
-              !inputValidationStatus.susCard)
+              !inputValidationStatus.numberSusCard)
         }"
-        (focus)="inputValidationStatus.susCard = true"
+        (focus)="inputValidationStatus.numberSusCard = true"
         (focusout)="
           patientRegistry.numberSusCard.length == 15 &&
           patientRegistry.numberSusCard.length > 0
-            ? (inputValidationStatus.susCard = true)
-            : (inputValidationStatus.susCard = false)
+            ? (inputValidationStatus.numberSusCard = true)
+            : (inputValidationStatus.numberSusCard = false)
         "
       />
       <span
         class="span-name message-alert"
         *ngIf="
-          !inputValidationStatus.susCard &&
+          !inputValidationStatus.numberSusCard &&
           patientRegistry.numberSusCard.length > 0
         "
         ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
@@ -166,7 +166,7 @@
 
       <!-- DATA DE APLICAÇÃO -->
       <div class="page__body__form__date">
-        <label for="application-date" class="page__body__form__labels"
+        <label for="date-application" class="page__body__form__labels"
           >Data de Aplicação *</label
         >
         <input
@@ -178,7 +178,7 @@
           [ngClass]="{
             'style-condition':
               patientRegistry.dateApplicationVaccine.length > 0 &&
-              (!regexExpressions.dateCharactersPermited.test(
+              (!regexExpressions.dateCharactersPermitted.test(
                 patientRegistry.dateApplicationVaccine
               ) ||
                 !inputValidationStatus.applicationDate)
@@ -205,7 +205,7 @@
                   patientRegistry.dateApplicationVaccine,
                   'applicationDate'
                 )
-              : (inputValidationStatus.dateApplicationSmallerThanCurrentDate = true)
+              : (inputValidationStatus.applicationDateSmallerThanCurrentDate = true)
           "
           (focus)="inputValidationStatus.applicationDate = true"
           (focusout)="
@@ -229,7 +229,7 @@
         class="span-name message-alert"
         *ngIf="
           patientRegistry.dateApplicationVaccine.length != 0 &&
-          !regexExpressions.dateCharactersPermited.test(
+          !regexExpressions.dateCharactersPermitted.test(
             patientRegistry.dateApplicationVaccine
           )
         "
@@ -246,14 +246,14 @@
         class="span-name message-alert"
         *ngIf="
           patientRegistry.dateApplicationVaccine.length != 0 &&
-          !inputValidationStatus.dateApplicationSmallerThanCurrentDate
+          !inputValidationStatus.applicationDateSmallerThanCurrentDate
         "
         ><fa-icon [icon]="faTriangleExclamation"></fa-icon>
         <p>Digite uma data anterior ou igual a de hoje!</p></span
       >
 
       <!-- VACINA APLICADA -->
-      <label for="vaccine" class="page__body__form__labels"
+      <label for="vaccine-select" class="page__body__form__labels"
         >Vacina Aplicada*</label
       >
       <select

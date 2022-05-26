@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DateService } from 'src/app/services/date.service';
 import { RegistrationService } from 'src/app/services/registration-service.service';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid4 } from 'uuid';
 import {
   faPaperPlane,
   faArrowsRotate,
@@ -14,14 +14,13 @@ import {
   styleUrls: ['./registration-create.component.scss'],
 })
 export class RegistrationCreateComponent implements OnInit {
-  vaccineSelected: any = null;
-  vaccines: any = [{ id: 1, name: 'CoronaVac' }];
+  vaccines = [{ id: 1, name: 'CoronaVac' }];
   faPaperPlane = faPaperPlane;
   faArrowsRotate = faArrowsRotate;
   faTriangleExclamation = faTriangleExclamation;
   patientBirthDate: string = '';
   patientDateApplicationVaccine: string = '';
-  inputValidationStatus: any = {
+  inputValidationStatus = {
     name: true,
     birthDate: true,
     numberSusCard: true,
@@ -30,22 +29,21 @@ export class RegistrationCreateComponent implements OnInit {
     applicationDateSmallerThanCurrentDate: true,
     emptyVaccine: false,
   };
-  patientRegistry: any = {
-    registryUUID: '',
-    name: '',
-    birthDate: '',
-    numberSusCard: '',
-    dateApplicationVaccine: '',
-    vaccineID: 0,
+  patientRegistry = {
+    registryUUID: "",
+    name: "",
+    birthDate: "",
+    numberSusCard: "",
+    dateApplicationVaccine: "",
+    vaccineID: 0
   };
-  regexExpressions: any = {
-    lettersAndSpace: /^[a-zA-Z\u00C0-\u00FF ]{1,}$/,
-    numbers: /^[0-9]{1,}$/,
-    dateCharactersPermited: /^[0-9\/\.-]{1,}$/,
+  regexExpressions = {
+    lettersAndSpace: /^[a-zA-Z\u00C0-\u00FF ]+$/,
+    numbers: /^\d+$/,
+    dateCharactersPermitted: /^[\d\/.-]+$/,
     dateAcceptsFormats:
-      /(\d\d\d\d\d\d\d\d)|(\d\d\/\d\d\/\d\d\d\d)|(\d\d-\d\d-\d\d\d\d)|(\d\d\/\d\d\/\d\d\d\d)/,
+      /(\d\d\d\d\d\d\d\d)|(\d\d\/\d\d\/\d\d\d\d)|(\d\d-\d\d-\d\d\d\d)|(\d\d.\d\d.\d\d\d\d)/,
   };
-  formValidToSend: boolean = true;
   showAlertFormInvalid: boolean = false;
 
   constructor(
@@ -56,12 +54,12 @@ export class RegistrationCreateComponent implements OnInit {
   ngOnInit(): void {}
 
   validateDate(date: string, inputValidationStatus: string): void {
-    let dateFormated: string = '';
+    let dateFormatted: string = '';
 
     if (this.regexExpressions.numbers.test(date) && date.length == 8) {
-      dateFormated = date;
+      dateFormatted = date;
     } else if (date.length == 10) {
-      dateFormated =
+      dateFormatted =
         date.substring(0, 2) + date.substring(3, 5) + date.substring(6, 10);
     } else {
       if (inputValidationStatus == 'birthDate') {
@@ -69,36 +67,36 @@ export class RegistrationCreateComponent implements OnInit {
         this.inputValidationStatus.birthDateSmallerThanCurrentDate = true;
       } else if (inputValidationStatus == 'applicationDate') {
         this.inputValidationStatus.applicationDate = false;
-        this.inputValidationStatus.dateApplicationSmallerThanCurrentDate = true;
+        this.inputValidationStatus.applicationDateSmallerThanCurrentDate = true;
       }
     }
 
     if (inputValidationStatus == 'birthDate') {
       if (
-        !this.dateService.validateDate(dateFormated) ||
-        !this.regexExpressions.dateAcceptsFormats.test(dateFormated)
+        !this.dateService.validateDate(dateFormatted) ||
+        !this.regexExpressions.dateAcceptsFormats.test(dateFormatted)
       ) {
         this.inputValidationStatus.birthDate = false;
       } else if (
-        !this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormated)
+        !this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormatted)
       ) {
         this.inputValidationStatus.birthDateSmallerThanCurrentDate = false;
       } else {
-        this.patientBirthDate = dateFormated;
+        this.patientBirthDate = dateFormatted;
       }
     } else if (inputValidationStatus == 'applicationDate') {
       if (
-        !this.dateService.validateDate(dateFormated) ||
-        !this.regexExpressions.dateAcceptsFormats.test(dateFormated)
+        !this.dateService.validateDate(dateFormatted) ||
+        !this.regexExpressions.dateAcceptsFormats.test(dateFormatted)
       ) {
         this.inputValidationStatus.applicationDate = false;
       } else if (
-        !this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormated)
+        !this.dateService.validateIfDateIsBiggerToCurrentDate(dateFormatted)
       ) {
-        this.inputValidationStatus.dateApplicationSmallerThanCurrentDate =
+        this.inputValidationStatus.applicationDateSmallerThanCurrentDate =
           false;
       } else {
-        this.patientDateApplicationVaccine = dateFormated;
+        this.patientDateApplicationVaccine = dateFormatted;
       }
     }
   }
@@ -109,18 +107,18 @@ export class RegistrationCreateComponent implements OnInit {
       !this.patientRegistry.name ||
       !this.patientRegistry.birthDate ||
       this.patientRegistry.numberSusCard.length < 15 ||
-      !this.patientRegistry.dateApplicationVaccine || 
+      !this.patientRegistry.dateApplicationVaccine ||
       this.patientRegistry.vaccineID == 0 ||
       !this.regexExpressions.lettersAndSpace.test(this.patientRegistry.name) ||
-      !this.regexExpressions.dateCharactersPermited.test(this.patientRegistry.birthDate) ||
+      !this.regexExpressions.dateCharactersPermitted.test(this.patientRegistry.birthDate) ||
       !this.regexExpressions.dateAcceptsFormats.test(this.patientRegistry.birthDate) ||
       !this.inputValidationStatus.birthDate ||
       !this.inputValidationStatus.birthDateSmallerThanCurrentDate ||
       !this.regexExpressions.numbers.test(this.patientRegistry.numberSusCard) ||
-      !this.regexExpressions.dateCharactersPermited.test(this.patientRegistry.dateApplicationVaccine) ||
+      !this.regexExpressions.dateCharactersPermitted.test(this.patientRegistry.dateApplicationVaccine) ||
       !this.regexExpressions.dateAcceptsFormats.test(this.patientRegistry.dateApplicationVaccine) ||
       !this.inputValidationStatus.applicationDate ||
-      !this.inputValidationStatus.dateApplicationSmallerThanCurrentDate
+      !this.inputValidationStatus.applicationDateSmallerThanCurrentDate
     ) {
       this.showAlertFormInvalid = true;
       setTimeout(() => {
@@ -136,7 +134,7 @@ export class RegistrationCreateComponent implements OnInit {
     if (this.patientRegistry.vaccineID == 0) {
       this.inputValidationStatus.emptyVaccine = true;
     }
-    this.patientRegistry.registryUUID = uuidv4();
+    this.patientRegistry.registryUUID = uuid4();
     if (this.validateFormToSend()) {
       this.patientRegistry.birthDate = this.patientBirthDate;
       this.patientRegistry.dateApplicationVaccine = this.patientDateApplicationVaccine;
